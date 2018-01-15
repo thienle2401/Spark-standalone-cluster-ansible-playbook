@@ -1,0 +1,11 @@
+---
+hadoop_ver: 2.7.3
+hadoop_dist: 'hadoop-{{ hadoop_ver }}'
+
+hadoop_mirror_url: http://archive.apache.org/dist/hadoop/common
+hadoop_tgz: '{{hadoop_dist}}.tar.gz'
+hadoop_url: '{{ hadoop_mirror_url }}/{{ hadoop_dist }}/{{hadoop_tgz}}'
+
+hadoop_parent_dir: /usr/local
+hadoop_target_dir : '{{hadoop_parent_dir}}/{{hadoop_dist}}'
+hadoop_link_dir: '{{spark_parent_dir}}/hadoop'

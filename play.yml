@@ -1,0 +1,13 @@
+---
+
+- name: setup master node
+  hosts: all
+  remote_user: root
+
+
+  tasks:
+  
+  # append ip addresses and hostnames for all nodes
+  # should only add new records if not existed
+  - debug:
+      msg: 'I am {{ inventory_hostname }}'

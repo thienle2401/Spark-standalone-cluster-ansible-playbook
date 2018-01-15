@@ -1,0 +1,5 @@
+# Ansible Playbook for Apache Spark Standalone
+This Ansible playbook setup up a standalone Apache Spark cluster with Hadoop of specified versions.
+
+# Example
+...

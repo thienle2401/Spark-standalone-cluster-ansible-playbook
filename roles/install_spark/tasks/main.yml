@@ -1,0 +1,47 @@
+---
+
+- block:
+
+  - name: download Spark in async mode
+    # async: 1800
+    # poll: 0
+    get_url:
+      url: '{{spark_url}}'
+      dest: /tmp/{{spark_tgz}}
+      mode: 0644
+    #  checksum: '{{spark_checksum}}'
+      timeout: '{{spark_timeout}}'
+    register: download_spark_binary
+    ignore_errors: '{{ ansible_check_mode }}'
+
+  - name: untar the downloaded Apache Spark 
+    unarchive:
+      remote_src: yes
+      dest: '{{spark_parent_dir}}'
+      src: /tmp/{{spark_tgz}}
+      creates: '{{spark_target_dir}}'
+
+  - name: create symlink
+    file:
+      state: link 
+      src: '{{spark_target_dir}}'
+      dest: '{{spark_link_dir}}'
+
+  # add Spark to PATH
+  - name: copy template files for env variables
+    with_items:
+      - f: spark.sh
+        d: /etc/profile.d
+        m: '0644'
+      - f: spark.env
+        d: '{{spark_target_dir}}'
+        m: '0644'
+      - f: spark-env.sh
+        d: '{{spark_parent_dir}}/spark/conf'
+        m: '0755'
+    template:
+      src: '{{item.f}}.j2'
+      dest: '{{item.d}}/{{item.f}}'
+      mode: '{{item.m}}'
+
+  ignore_errors: '{{ ansible_check_mode }}'

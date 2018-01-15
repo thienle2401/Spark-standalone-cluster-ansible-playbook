@@ -1,0 +1,41 @@
+---
+
+- name: common setup for all nodes
+  hosts: all
+  remote_user: root
+
+  gather_facts: True
+  
+
+  environment:
+    http_proxy: http://10.158.100.1:8080
+
+  roles:
+    - common
+    - install_hadoop
+    - install_spark
+
+- name: cluster master node
+  hosts: master
+  remote_user: root
+
+  tasks:
+    - name: starting master node
+      command: '{{spark_target_dir}}/sbin/start-master.sh'
+      register: start_spark_master
+      ignore_errors: yes
+
+    - debug:
+        var: start_spark_master.stdout_lines
+
+- name: cluster slave nodes
+  hosts: workers
+  remote_user: root
+
+  tasks:
+    - name: starting defined workers
+      command: '{{spark_target_dir}}/sbin/start-slave.sh spark://master-01:7077 -h {{ inventory_hostname }}' 
+      register: start_spark_worker
+
+    - debug: 
+        var: start_spark_worker.stdout_lines

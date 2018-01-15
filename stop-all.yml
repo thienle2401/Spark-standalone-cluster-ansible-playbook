@@ -1,0 +1,29 @@
+---
+
+- name: master node
+  hosts: master
+  gather_facts: False
+  remote_user: root
+
+  tasks:
+
+    - name: stopping {{ inventory_hostname }}
+      command: '{{spark_target_dir}}/sbin/stop-master.sh' 
+      register: stop_master_task
+
+    - debug: 
+        msg: stop_master_task.stdout_lines
+
+
+- name: worker nodes
+  hosts: workers
+  remote_user: root
+
+  tasks:
+
+    - name: stopping {{ inventory_hostname }}
+      command: '{{spark_target_dir}}/sbin/stop-slave.sh' 
+      register: stop_worker_task
+
+    - debug: 
+        msg: stop_worker_task.stdout_lines

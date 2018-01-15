@@ -1,0 +1,41 @@
+---
+
+
+- block:
+
+  - name: download Hadoop in async mode
+    async: 1800
+    poll: 10
+    get_url:
+      url: '{{ hadoop_url }}'
+      dest: /tmp/{{ hadoop_tgz }}
+      mode: 0644
+    #  checksum: '{{ xxx }}'
+    #  timeout: '{{ xxx }}'
+    register: download_hadoop_binary
+
+  - name: untar the downloaded Apache Spark 
+    unarchive:
+      remote_src: yes
+      dest: '{{ hadoop_parent_dir }}'
+      src: /tmp/{{ hadoop_tgz }}
+      creates: '{{ hadoop_target_dir }}'
+
+  - name: create symlink
+    file:
+      state: link 
+      src: '{{ hadoop_target_dir }}'
+      dest: '{{ hadoop_link_dir }}'
+
+  # add Hadoop to PATH
+  - name: include Hadoop in default PATH
+    with_items:
+      - f: hadoop.sh
+        d: /etc/profile.d
+        m: '0644'
+    template:
+      src: '{{item.f}}.j2'
+      dest: '{{item.d}}/{{item.f}}'
+      mode: '{{item.m}}'
+
+  ignore_errors: '{{ ansible_check_mode }}'

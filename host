@@ -1,0 +1,16 @@
+# float option is needed for OpenStack cloud, 
+# where the cluster can be technically setup 
+# without assigned public ip address (except master)
+
+[master]
+master-01	ansible_host=192.168.0.10 floating_ip=
+
+
+
+[workers]
+worker-01 	ansible_host=192.168.0.12 floating_ip=
+worker-02	ansible_host=192.168.0.17 floating_ip=
+
+
+
+

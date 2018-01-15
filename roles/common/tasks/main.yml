@@ -1,0 +1,45 @@
+---
+# things to be run on all host
+
+- name: update packages list
+  apt:
+    update_cache: yes
+    
+- name: install java
+  apt:
+    name: default-jre
+    state: latest
+
+- name: install r-base
+  apt:
+    name: r-base
+    state: latest
+
+# modify host file on all nodes, so hostname can be used
+- name: modify host file
+  with_items: "{{ groups['all'] }}"
+  when: hostvars[item].ansible_default_ipv4.address is defined
+  lineinfile:
+    path: /etc/hosts
+    create: yes
+    regexp: '.*{{ item }}$'
+    state: present 
+    line: "{{ hostvars[item].ansible_default_ipv4.address }} {{ item }}"
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
