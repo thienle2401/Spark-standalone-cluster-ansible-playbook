@@ -2,9 +2,14 @@
 
 - block:
 
+  - name: Check for Spark exists at usr/spark     
+    stat: path=/opt/jdk1.8.0_71
+    register: spark_dir_stat
+
   - name: download Spark in async mode
-    # async: 1800
-    # poll: 0
+    when: not spark_dir_stat.stat.exists
+    async: 1800
+    poll: 10
     get_url:
       url: '{{spark_url}}'
       dest: /tmp/{{spark_tgz}}
@@ -13,7 +18,7 @@
       timeout: '{{spark_timeout}}'
     register: download_spark_binary
     ignore_errors: '{{ ansible_check_mode }}'
-
+    
   - name: untar the downloaded Apache Spark 
     unarchive:
       remote_src: yes
