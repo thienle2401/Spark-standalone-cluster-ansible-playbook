@@ -1,6 +1,10 @@
 ---
 # things to be run on all host
 
+- name: clear packages list
+  apt:
+    autoclean: yes
+
 - name: update packages list
   apt:
     update_cache: yes
@@ -13,26 +17,37 @@
 - name: install r-base
   apt:
     name: r-base
-    state: latest
+    state: present
+  ignore_errors: yes
 
 # modify host file on all nodes, so hostname can be used
 - name: modify host file
   with_items: "{{ groups['all'] }}"
-  when: hostvars[item].ansible_default_ipv4.address is defined
+  when: hostvars[item].ansible_host != ""
   lineinfile:
     path: /etc/hosts
     create: yes
     regexp: '.*{{ item }}$'
     state: present 
-    line: "{{ hostvars[item].ansible_default_ipv4.address }} {{ item }}"
+    line: "{{ hostvars[item].ansible_host }} {{ item }}"
 
-
-
+- name: set relevant evn variables for this role
+  copy:
+    src: 'set-env.sh'
+    dest: '/etc/profile.d'
+    mode: '0755'
   
-  
-
-
-
+- name: create client host file
+  copy:
+    content: |
+      {% for item in groups['all'] %}
+      {% if hostvars[item].floating_ip != '' %}
+      {{ hostvars[item].floating_ip }} {{ item }}
+      {% endif %}
+      {% endfor %}
+    dest: './client_host_file'
+  run_once: yes
+  delegate_to: localhost
 
 
 

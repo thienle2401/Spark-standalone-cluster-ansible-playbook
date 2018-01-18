@@ -1,0 +1,37 @@
+---
+
+- name: zeppelin control
+  hosts: zeppelin
+  gather_facts: False
+  remote_user: root
+
+  tasks:
+
+    - name: create if needed dirs for Zeppelin on host
+      tags: start
+      file:
+        path: '{{ item.p }}'
+        mode: '{{ item.m }}'
+        state: directory
+      with_items:
+        - p: /root/zeppelin/logs
+          m: 0766
+        - p: /root/zeppelin/notebook
+          m: 0766
+
+    - name: start zeppelin Docker container
+      tags: start
+      shell: >
+        docker run -d 
+        --name zeppelin 
+        --network=host 
+        -v /root/zeppelin/logs:/usr/zeppelin/logs
+        -v /root/zeppelin/notebook:/usr/zeppelin/notebook
+        {{ zeppelin_docker_image }}
+
+    - name: 'stop/remove zeppelin container'
+      tags: stop
+      command: '{{ item }}'
+      with_items:
+        - docker stop zeppelin
+        - docker rm zeppelin

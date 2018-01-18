@@ -1,0 +1,70 @@
+---
+
+- name: cluster master node
+  hosts: master
+  tags: start
+  gather_facts: False
+  remote_user: root
+
+  tasks:
+    - name: starting master node
+      command: '/usr/local/spark/sbin/start-master.sh'
+      register: start_spark_master
+      ignore_errors: yes
+
+    - debug:
+        var: start_spark_master.stdout_lines
+
+    - name: wait 15 seconds before start workers
+      pause:
+        seconds: 15
+
+- name: cluster slave nodes
+  hosts: workers
+  tags: start
+  gather_facts: False
+  remote_user: root
+
+  tasks:
+    - name: starting defined workers
+      command: '/usr/local/spark/sbin/start-slave.sh spark://master-01:7077 -h {{ inventory_hostname }}' 
+      register: start_spark_worker
+
+    - debug: 
+        var: start_spark_worker.stdout_lines
+
+##############################
+## stopping the cluster ######
+##############################
+
+- name: stopping master node
+  hosts: master
+  tags: stop
+  gather_facts: False
+  remote_user: root
+
+  tasks:
+
+    - name: 'stopping {{ inventory_hostname }}, {{ ansible_host }}'
+      command: '/usr/local/spark/sbin/stop-master.sh' 
+      register: stop_master_task
+
+    - debug: 
+        msg: '{{ stop_master_task.stdout_lines }}'
+
+
+- name: stopping worker nodes
+  hosts: workers
+  tags: stop
+  gather_facts: False
+  remote_user: root
+
+  tasks:
+
+    - command: '/usr/local/spark/sbin/stop-slave.sh' 
+      register: stop_worker_task
+
+    - debug: 
+        msg:
+          - 'Stopping: {{ inventory_hostname }}, {{ ansible_host }}'
+          - '{{ stop_worker_task.stdout_lines }}'

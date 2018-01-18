@@ -2,40 +2,43 @@
 
 - name: common setup for all nodes
   hosts: all
-  remote_user: root
-
   gather_facts: True
-  
-
-  environment:
-    http_proxy: http://10.158.100.1:8080
+  remote_user: root
 
   roles:
     - common
+
+##############################
+##############################
+
+- name: cluster setup
+  hosts: master:workers
+  gather_facts: True
+  remote_user: root
+
+  environment:
+    http_proxy: '{{ http_proxy }}'
+    https_proxy: '{{ https_proxy }}'
+
+  roles:
     - install_hadoop
     - install_spark
 
-- name: cluster master node
-  hosts: master
+##############################
+##############################
+
+- name: prepare Zeppelin instance
+  hosts: zeppelin
   remote_user: root
 
-  tasks:
-    - name: starting master node
-      command: '{{spark_target_dir}}/sbin/start-master.sh'
-      register: start_spark_master
-      ignore_errors: yes
+  environment:
+    http_proxy: '{{ http_proxy }}'
+    https_proxy: '{{ https_proxy }}'
 
-    - debug:
-        var: start_spark_master.stdout_lines
+  vars:
+    docker_http_proxy: "{{ ansible_env.http_proxy|default('') }}"
 
-- name: cluster slave nodes
-  hosts: workers
-  remote_user: root
+  roles:
+    - angstwad.docker_ubuntu
+    - install_zeppelin
 
-  tasks:
-    - name: starting defined workers
-      command: '{{spark_target_dir}}/sbin/start-slave.sh spark://master-01:7077 -h {{ inventory_hostname }}' 
-      register: start_spark_worker
-
-    - debug: 
-        var: start_spark_worker.stdout_lines

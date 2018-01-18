@@ -1,0 +1,17 @@
+---
+
+- name: flush the changes after changed proxy
+  command: 'systemctl daemon-reload'
+
+- name: restart docker
+  command: 'systemctl restart docker'
+
+- name: confirm docker proxy changes
+  command: 'systemctl show --property=Environment docker'
+  register: docker_verify_proxy
+
+- debug:
+    var:  docker_verify_proxy.stdout_lines 
+
+- name: pull the required Zeppelin Docker image
+  command: 'docker pull {{ zeppelin_docker_image }}'

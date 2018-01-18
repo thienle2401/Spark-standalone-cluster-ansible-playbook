@@ -27,6 +27,12 @@
       src: '{{ hadoop_target_dir }}'
       dest: '{{ hadoop_link_dir }}'
 
+  - name: create symlink
+    file:
+      state: link 
+      src: '{{ hadoop_target_dir }}'
+      dest: '/usr/{{ hadoop_dist }}'
+
   # add Hadoop to PATH
   - name: include Hadoop in default PATH
     with_items:

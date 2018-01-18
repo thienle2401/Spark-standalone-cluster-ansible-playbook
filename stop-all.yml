@@ -1,29 +1,31 @@
 ---
 
-- name: master node
+- name: starting master node
   hosts: master
   gather_facts: False
   remote_user: root
 
   tasks:
 
-    - name: stopping {{ inventory_hostname }}
-      command: '{{spark_target_dir}}/sbin/stop-master.sh' 
+    - name: 'stopping {{ inventory_hostname }}, {{ ansible_host }}'
+      command: '/usr/local/spark/sbin/stop-master.sh' 
       register: stop_master_task
 
     - debug: 
-        msg: stop_master_task.stdout_lines
+        msg: '{{ stop_master_task.stdout_lines }}'
 
 
-- name: worker nodes
+- name: stopping worker nodes
   hosts: workers
+  gather_facts: False
   remote_user: root
 
   tasks:
 
-    - name: stopping {{ inventory_hostname }}
-      command: '{{spark_target_dir}}/sbin/stop-slave.sh' 
+    - command: '/usr/local/spark/sbin/stop-slave.sh' 
       register: stop_worker_task
 
     - debug: 
-        msg: stop_worker_task.stdout_lines
+        msg:
+          - 'Stopping: {{ inventory_hostname }}, {{ ansible_host }}'
+          - '{{ stop_worker_task.stdout_lines }}'
