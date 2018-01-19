@@ -17,8 +17,8 @@
   remote_user: root
 
   environment:
-    http_proxy: '{{ http_proxy }}'
-    https_proxy: '{{ https_proxy }}'
+    http_proxy: '{{ http_proxy | default("") }}'
+    https_proxy: '{{ https_proxy | default("") }}'
 
   roles:
     - install_hadoop
@@ -32,12 +32,13 @@
   remote_user: root
 
   environment:
-    http_proxy: '{{ http_proxy }}'
-    https_proxy: '{{ https_proxy }}'
+    http_proxy: '{{ http_proxy | default("") }}'
+    https_proxy: '{{ https_proxy | default("") }}'
 
   vars:
-    docker_http_proxy: "{{ ansible_env.http_proxy|default('') }}"
-
+    docker_http_proxy: '{{ http_proxy | default("") }}'
+    docker_https_proxy: '{{ https_proxy | default("") }}'
+    
   roles:
     - angstwad.docker_ubuntu
     - install_zeppelin

@@ -1,13 +1,16 @@
 ---
 
-- name: setup master node
-  hosts: all
-  remote_user: root
+# - name: setup master node
+#   hosts: all
+#   remote_user: root
 
-  tasks:
+#   tasks:
   
-  # append ip addresses and hostnames for all nodes
-  # should only add new records if not existed
-  - debug:
-      msg: "{{ groups['all'] }}"
-      
+#   # append ip addresses and hostnames for all nodes
+#   # should only add new records if not existed
+- name: Create a new instance and attaches to a network and passes metadata to the instance
+  hosts: all
+  tasks:
+    - debug:
+        msg: '{{ http_proxy | default("") }}'
+

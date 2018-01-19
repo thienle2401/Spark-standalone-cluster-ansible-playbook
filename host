@@ -3,21 +3,28 @@
 # without assigned public ip address (except master)
 
 [master]
-master-01	ansible_host=192.168.0.17 floating_ip=10.157.50.175
+master-01	ansible_host= floating_ip=
 
 
 
 [workers]
-worker-01 	ansible_host=192.168.0.14 floating_ip=
-worker-02	ansible_host=192.168.0.16 floating_ip=
-worker-03	ansible_host=192.168.0.7 floating_ip=
-worker-04	ansible_host=192.168.0.10 floating_ip=
-worker-05	ansible_host=192.168.0.12 floating_ip=
-worker-06	ansible_host=192.168.0.22 floating_ip=
+worker-01 	ansible_host= floating_ip=
+
 
 # I am using an instance with Zeppelin with the cluster
 # therefore, I also add this entry, so host file in
 # Zeppelin will also be update
 
 [zeppelin]
-zeppelin ansible_host=192.168.0.13 floating_ip=10.157.50.76
+zeppelin ansible_host= floating_ip=
+
+# Global configuration for cloud specific #
+###########################################
+[all:children]
+master
+workers
+zeppelin
+
+[all:vars]
+# http_proxy=0.0.0.0
+# https_proxy=0.0.0.0

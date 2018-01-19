@@ -9,7 +9,4 @@ spark_hadoop_ver : hadoop2.7
 # chekc docker tag is specifically is for 2.7.3
 zeppelin_docker_image: 'dylanmei/zeppelin:0.7.3'
 
-http_proxy: http://10.158.100.1:8080
-https_proxy: http://10.158.100.1:8080
-
 author: 'Thien Le, thienle.2401@gmail.com'
