@@ -33,5 +33,5 @@
       tags: stop
       command: '{{ item }}'
       with_items:
-        - docker stop zeppelin-spark-{{ spark_ver }}
-        - docker rm zeppelin-spark-{{ spark_ver }}
+        - docker stop $(docker ps -aq -f name=.+)
+        - docker rm $(docker ps -aq -f name=.+)
