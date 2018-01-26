@@ -48,6 +48,8 @@
     dest: './client_host_file'
   run_once: yes
   delegate_to: localhost
+  ignore_errors: yes
+
 
 
 

@@ -1,2 +1,2 @@
 ---
-zeppelin_docker_image: 'dylanmei/zeppelin:0.7.3'
+zeppelin_docker_image: 'docker-zeppelin-spark-hadoop:latest'

@@ -1,12 +1,16 @@
 ---
+# Hadoop
 hadoop_ver: 2.7.3
 
-spark_ver : '2.2.0'
+# Apache Spark
+spark_ver : '2.1.1'
 spark_hadoop_ver : hadoop2.7
 
 # reference for the docker to use from dockerhub
 # handy to setup a zeppeling along with the cluster
 # chekc docker tag is specifically is for 2.7.3
-zeppelin_docker_image: 'dylanmei/zeppelin:0.7.3'
+
+# specific Zeppelin with Spark that matching the version Spark on cluster
+zeppelin_docker_image: 'thienle2401/docker-zeppelin-spark-hadoop:zeppelin0.7.3-spark{{ spark_ver }}'
 
 author: 'Thien Le, thienle.2401@gmail.com'
