@@ -13,4 +13,3 @@
   tasks:
     - debug:
         msg: '{{ http_proxy | default("") }}'
-
