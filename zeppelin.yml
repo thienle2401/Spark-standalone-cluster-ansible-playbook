@@ -22,16 +22,16 @@
     - name: start zeppelin Docker container
       tags: start
       shell: >
-        docker run -d 
-        --name zeppelin-spark-{{ spark_ver }} 
-        --network=host 
+        docker run -d
+        --name zeppelin-spark-{{ spark_ver }}
+        --network=host
         -v /root/zeppelin/logs:/usr/zeppelin/logs
         -v /root/zeppelin/notebook:/usr/zeppelin/notebook
-        zeppelin-spark-{{ spark_ver }}
+        {{ zeppelin_docker_image }}
 
     - name: 'stop/remove zeppelin container'
       tags: stop
       command: '{{ item }}'
       with_items:
-        - docker stop $(docker ps -aq -f name=.+)
-        - docker rm $(docker ps -aq -f name=.+)
+        - docker ps -aq -f name=.+ | xargs docker stop
+        - docker ps -aq -f name=.+ | xargs docker rm
