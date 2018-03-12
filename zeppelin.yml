@@ -25,13 +25,14 @@
         docker run -d
         --name zeppelin-spark-{{ spark_ver }}
         --network=host
+        -v /root/zeppelin/conf:/usr/zeppelin/conf
         -v /root/zeppelin/logs:/usr/zeppelin/logs
         -v /root/zeppelin/notebook:/usr/zeppelin/notebook
         {{ zeppelin_docker_image }}
 
     - name: 'stop/remove zeppelin container'
       tags: stop
-      command: '{{ item }}'
+      shell: '{{ item }}'
       with_items:
         - docker ps -aq -f name=.+ | xargs docker stop
         - docker ps -aq -f name=.+ | xargs docker rm
